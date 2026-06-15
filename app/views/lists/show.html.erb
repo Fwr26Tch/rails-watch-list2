@@ -1,0 +1,78 @@
+<div class="banner-small">
+  <div class="container">
+    <h1><%= @list.name %></h1>
+  </div>
+</div>
+
+<div class="container my-5">
+  <div class="movie-cards">
+    <% @list.bookmarks.each do |bookmark| %>
+      <div class="movie-card">
+        <img
+          src="<%= bookmark.movie.poster_url %>"
+          alt="<%= bookmark.movie.title %>"
+        >
+          <div class="movie-card-info">
+
+            <div class="d-flex justify-content-between align-items-center">
+              <h2><%= bookmark.movie.title %></h2>
+
+              <p class="rating">
+              ⭐ <%= bookmark.movie.rating %>
+              </p>
+            </div>
+            <p>
+                <%= bookmark.movie.overview %>
+            </p>
+        <p class="comment">
+            “<%= bookmark.comment %>”
+        </p>
+          <%= link_to "Delete",
+            bookmark_path(bookmark),
+            class: "btn-delete",
+            data: {
+              turbo_method: :delete,
+              turbo_confirm: "Are you sure?"
+            } %>
+        </div>
+      </div>
+    <% end %>
+
+  </div>
+    <div class="form-card mt-5">
+
+      <h3>Add a movie 🍿</h3>
+
+       <%= simple_form_for [@list, @bookmark] do |f| %>
+          <%= f.association :movie %>
+           <%= f.input :comment %>
+           <%= f.submit "Add movie", class: "btn btn-flat" %>
+       <% end %>
+
+    </div>
+  <div class="reviews mt-5">
+      <h3>Reviews ⭐</h3>
+        <% @list.reviews.each do |review| %>
+          <div class="review-card">
+            <p><% review.rating.times do %> ⭐
+              <% end %>
+            </p>
+            <p><%= review.comment %></p>
+          </div>
+        <% end %>
+  </div>
+
+<div class="form-card mt-4">
+  <h3>Add a review</h3>
+      <%= simple_form_for [@list, @review] do |f| %>
+        <%= f.input :comment %>
+        <%= f.input :rating,
+          collection: (0..5).to_a %>
+        <%= f.submit "Submit review",
+          class: "btn btn-flat" %>
+      <% end %>
+  </div>
+    <div class="mt-4">
+      <%= link_to "← Back to lists", lists_path %>
+    </div>
+</div>
